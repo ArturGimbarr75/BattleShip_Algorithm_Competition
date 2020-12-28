@@ -16,7 +16,7 @@ public struct Map
     public int BattleshipsLeft_4CellsShip { get; set; }
     public int ShipsLeft { get; set; }
 
-    public Map(MapType type = MapType.Empty)
+    public Map(MapType type)
     {
         Cells = new Dictionary<Coordinates, Cell>();
 

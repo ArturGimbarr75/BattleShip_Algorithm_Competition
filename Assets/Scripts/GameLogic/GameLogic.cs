@@ -21,32 +21,33 @@ public class GameLogic
         {
             Player = player1,
             PlayerMap = new Map(Map.MapType.RandomShipPlacement),
-            PlayerMapForOpponent = new Map()
+            PlayerMapForOpponent = new Map(Map.MapType.Empty)
         };
 
         Player2 = new PlayerElements()
         {
             Player = player2,
-            PlayerMap = Player1.PlayerMap,
-            PlayerMapForOpponent = new Map()
+            PlayerMap = Player1.PlayerMap.DeepCopy(),
+            PlayerMapForOpponent = new Map(Map.MapType.Empty)
         };
 
         IsFirstPlayerQueue = true;
     }
 
-    public Map[] GetCurrentMaps()
-        => new Map[] { Player1.PlayerMapForOpponent, Player2.PlayerMapForOpponent };
+    public Map[] GetCurrentMaps(bool getAllMapsData)
+        => getAllMapsData
+        ? new Map[] { Player1.PlayerMap, Player2.PlayerMap }
+        : new Map[] { Player1.PlayerMapForOpponent, Player2.PlayerMapForOpponent };
 
-    public Map[] GetNextMaps()
+    public Map[] GetNextMaps(bool getAllMapsData)
     {
         var coord = IsFirstPlayerQueue
             ? Player1.Player.GetCoordinates(Player2.PlayerMapForOpponent.DeepCopy())
             : Player2.Player.GetCoordinates(Player1.PlayerMapForOpponent.DeepCopy());
         ChangeMap(coord);
 
-        var maps = new Map[]{ Player1.PlayerMapForOpponent, Player2.PlayerMapForOpponent};
         IsFirstPlayerQueue = !IsFirstPlayerQueue;
-        return maps;
+        return GetCurrentMaps(getAllMapsData);
     }
 
     private void ChangeMap(Coordinates coord)
@@ -74,7 +75,31 @@ public class GameLogic
                 mapForOpponent.Cells[coord] = cell;
                 var res = CheckShipRecursively(coord, map);
                 if (res.destroyed)
+                {
                     ChangeToDestroyed(coord, ref map, ref mapForOpponent);
+                    switch (res.cellsCount)
+                    {
+                        case 1:
+                            map.DestroyersLeft_1CellsShip--;
+                            mapForOpponent.DestroyersLeft_1CellsShip--;
+                            break;
+
+                        case 2:
+                            map.SubmarinesLeft_2CellsShip--;
+                            mapForOpponent.SubmarinesLeft_2CellsShip--;
+                            break;
+
+                        case 3:
+                            map.CruisersLeft_3CellsShip--;
+                            mapForOpponent.CruisersLeft_3CellsShip--;
+                            break;
+
+                        case 4:
+                            map.BattleshipsLeft_4CellsShip--;
+                            mapForOpponent.BattleshipsLeft_4CellsShip--;
+                            break;
+                    }
+                }
                 break;
         }
 
@@ -121,13 +146,13 @@ public class GameLogic
         var ver = (ver1.destroyed && ver2.destroyed, ver1.cellsCount + ver2.cellsCount);
         var hor = (hor1.destroyed && hor2.destroyed, hor1.cellsCount + hor2.cellsCount);
 
-        return (ver.Item1 && hor.Item1, Mathf.Max(ver.Item2, hor.Item2));
+        return (ver.Item1 && hor.Item1, Mathf.Max(ver.Item2, hor.Item2) + 1);
     }
 
     (bool destroyed, int cellsCount) CheckVertical(int direction, Coordinates coord, Map map)
     {
         int y = coord.ToVector2Int().y + direction;
-        if (y > 10 && y < 1)
+        if (y > 10 || y < 1)
             return (true, 0);
         var newCoord = new Coordinates(y, (int)coord._Column);
         var type = map.Cells[newCoord].Type;
@@ -150,7 +175,7 @@ public class GameLogic
     (bool destroyed, int cellsCount) CheckHorizontal(int direction, Coordinates coord, Map map)
     {
         int x = coord.ToVector2Int().x + direction;
-        if (x > 10 && x < 1)
+        if (x > 10 || x < 1)
             return (true, 0);
         var newCoord = new Coordinates(coord.ToVector2Int().y, x);
         var type = map.Cells[newCoord].Type;
@@ -169,6 +194,4 @@ public class GameLogic
             return (true, 0);
         }
     }
-
-    
 }

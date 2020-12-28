@@ -12,7 +12,7 @@ public struct Coordinates
 
     public Coordinates(int row, int column)
     {
-        if (IsInputValid(row, column))
+        if (!IsInputValid(row, column))
             throw new ArgumentException("Coordinates must be in the range from 1 to 10");
             _Row = (Row)(-row);
             _Column = (Column)column;
@@ -20,14 +20,14 @@ public struct Coordinates
 
     public Coordinates(Row row, Column column)
     {
-        if (IsInputValid(row, column))
+        if (!IsInputValid(row, column))
             throw new ArgumentException("Coordinates must be in the range from 1 to 10");
         _Row = row;
         _Column = column;
     }
 
     private static bool IsInputValid(Row row, Column column)
-        => ((int)row <= 10 && (int)row >= 1
+        => ((int)row >= -10 && (int)row <= -1
             && (int)column >= 1 && (int)column <= 10);
 
     private static bool IsInputValid(int row, int column)
