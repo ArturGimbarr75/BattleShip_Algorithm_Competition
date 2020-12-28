@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+struct Cell
+{
+    public CellType Type { get; set; }
+    public readonly Coordinates _Coordinates;
+
+    public Cell(Coordinates coordinates, CellType type = CellType.Water)
+    {
+        Type = type;
+        _Coordinates = coordinates;
+    }
+}
