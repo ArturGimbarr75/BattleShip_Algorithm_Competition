@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-struct Map
+public struct Map
 {
-    public Dictionary<Coordinates, Cell> Cells;
+    public Dictionary<Coordinates, Cell> Cells { get; set; }
 
     public const int RowCount = 10;
     public const int ColumnCount = 10;
@@ -14,6 +14,7 @@ struct Map
     public int SubmarinesLeft_2CellsShip { get; set; }
     public int CruisersLeft_3CellsShip { get; set; }
     public int BattleshipsLeft_4CellsShip { get; set; }
+    public int ShipsLeft { get; set; }
 
     public Map(MapType type = MapType.Empty)
     {
@@ -27,6 +28,7 @@ struct Map
         SubmarinesLeft_2CellsShip = 3;
         CruisersLeft_3CellsShip = 2;
         BattleshipsLeft_4CellsShip = 1;
+        ShipsLeft = 10;
 
         if (type == MapType.RandomShipPlacement)
             RandomShipPlacement();

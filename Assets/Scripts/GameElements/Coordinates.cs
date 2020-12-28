@@ -65,12 +65,12 @@ public struct Coordinates
 
 public static class CoordinatesExtension
 {
-    public static Coordinates Vector2IntToCoordinates(this Vector2Int vector)
+    public static Coordinates ToCoordinates(this Vector2Int vector)
     {
         return new Coordinates(vector.y, vector.x);
     }
 
-    public static Vector2Int CoordinatesToVector2Int(this Coordinates coordinates)
+    public static Vector2Int ToVector2Int(this Coordinates coordinates)
     {
         return new Vector2Int((int)coordinates._Column, -(int)(coordinates._Row));
     }

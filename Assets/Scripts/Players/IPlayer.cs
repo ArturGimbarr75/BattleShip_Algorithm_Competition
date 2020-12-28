@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-interface IPlayer
+public interface IPlayer
 {
     Coordinates GetCoordinates(Map opponentMap);
 }

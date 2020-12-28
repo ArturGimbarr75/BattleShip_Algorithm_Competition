@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-struct Cell
+public struct Cell
 {
     public CellType Type { get; set; }
     public readonly Coordinates _Coordinates;
